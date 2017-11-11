@@ -140,6 +140,15 @@ userFsTryOpen_payload:
 .pool
 ; an extremely tight fit! cannot even fit one more instruction!
 
+.org 0x198C9C
+	mov r2, 0xE
+	
+.org 0x16302C
+	mov r2, 0xE
+	
+.org 0x1F7F84
+	mov r2, 0xE
+
 .org 0x52B498 ; place all the path information in the old pointer table address
 path: .db "/rhmm/C00.bin", 0
 pathend:
