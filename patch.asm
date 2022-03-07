@@ -1,7 +1,6 @@
 ; FS redirection patch for Rhythm Heaven Megamix
 
 .arm.little
-;.open "rhmm_Edited.3ds", "rhmm_Patched.3ds", 0x100000 - 0x6E00
 .open "original.bin", "code.bin", 0x100000
 
 openFile equ 0x279E60 ; svc 0x32 (0x08030204)
@@ -194,7 +193,7 @@ sdPath: .db "_:/rhmm",0
 	.db 0,0,0,0xC
 .org 0x32D5E8
 	.db 0,0,0,0xC
-	
+
 ; overwrite more offsets! Changed from 0x53EF54
 .org 0x101C10
 	.db 0x88,0x15,0,0xC
@@ -222,5 +221,34 @@ sdPath: .db "_:/rhmm",0
 	.db 0x58,0x33,0,0xC
 .org 0x32D770
 	.db 0x58,0x33,0,0xC
+
+; Prologue jingle patch
+
+gateJingleFunc equ 0x32d678
+newCode equ 0x399f00
+prologueJingles equ 0x52c9b8
+
+.org gateJingleFunc
+	mov r2, r0
+	b newCode
+.org newCode
+	ldr r1, [pc, #4]
+	mov r0, #0
+	b label1
+    .dw prologueJingles
+label1:
+	add r3, r1, r0, lsl #3
+	ldr r12, [r3]
+	cmp r12, r2
+	bne label3
+	ldr r0, [r3, #4]
+	bx lr
+label3:
+	add r0, r0, #1
+	cmp r0, #0x2a
+	blt label1
+	adr r0, nf
+	bx lr
+nf: .dh "NotFoundAac"
 
 .close
