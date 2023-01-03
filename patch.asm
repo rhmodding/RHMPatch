@@ -234,7 +234,7 @@ prologueJingles equ 0x52C9B8
 
 .org newCode
     adr r1, pr_pj
-    mov r1, [r1]
+    ldr r1, [r1]
     mov r0, #0
     b pr_label1
 pr_pj: .dw prologueJingles
