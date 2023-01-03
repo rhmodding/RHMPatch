@@ -233,10 +233,11 @@ prologueJingles equ 0x52C9B8
     b newCode
 
 .org newCode
-    ldr r1, [pc, #4]
+    adr r1, pr_pj
+    mov r1, [r1]
     mov r0, #0
     b pr_label1
-    .dw prologueJingles
+pr_pj: .dw prologueJingles
 pr_label1:
     add r3, r1, r0, lsl #3
     ldr r12, [r3]
