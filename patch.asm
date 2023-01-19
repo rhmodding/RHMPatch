@@ -263,27 +263,31 @@ input_struct    equ 0x0054eed0
 .org cmd_1f_offset
     .dw in_newcode
 
+; r2 - special arg / arg0
+; r3 - cmd args
+; r6 - current state
+
 .org pr_end
 in_newcode:
+    ; don't shift by 32 bits or more, that'll always be 0
     ldr r1, [r3]
     cmp r1, #0x20
     blt in_label1
 in_return:
+    ; set condvar to 0
     mov r0, #0
     str r0, [r6, #0x20]
     b cmd_cmn_return
 in_label1:
+    ; load input data (u32 bitflags)
     ldr r0, =input_struct
     ldr r0, [r0]
     ldr r0, [r0, #4]
-    cmp r2, #2
-    bgt in_return
-    ldreq r0, [r0, #0xC]
-    beq in_label2
-    cmp r2, #1
-    ldreq r0, [r0, #0x8]
-    ldrne r0, [r0, #0x4]
+    cmp r2, #0
+    bne in_return
+    ldr r0, [r0, #0x4]
 in_label2:
+    ; set condvar to bit number args[0]
     lsr r0, r0, r1
     and r0, r0, #1
     str r0, [r6, #0x20]
