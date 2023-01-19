@@ -254,4 +254,41 @@ pr_label3:
 pr_nf: .asciiz "NotFoundAac"
 pr_end:
 
+; Input checker command
+
+cmd_1f_offset   equ 0x0025c440
+cmd_cmn_return  equ 0x002613cc
+input_struct    equ 0x0054eed0
+
+.org cmd_1f_offset
+    .dw in_newcode
+
+.org pr_end
+in_newcode:
+    ldr r1, [r3]
+    cmp r1, #0x20
+    blt in_label1
+in_return:
+    mov r0, #0
+    str r0, [r6, #0x20]
+    b cmd_cmn_return
+in_label1:
+    ldr r0, =input_struct
+    ldr r0, [r0]
+    ldr r0, [r0, #4]
+    cmp r2, #2
+    bgt in_return
+    ldreq r0, [r0, #0xC]
+    beq in_label2
+    cmp r2, #1
+    ldreq r0, [r0, #0x8]
+    ldrne r0, [r0, #0x4]
+in_label2:
+    lsr r0, r0, r1
+    and r0, r0, #1
+    str r0, [r6, #0x20]
+    b cmd_cmn_return
+
+.pool
+
 .close
