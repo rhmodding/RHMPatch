@@ -21,17 +21,9 @@ jt_table:
     .word input_command
 jt_end:
 
-; Input checker command
-
-cmd_1f_offset       equ 0x0025c440
-
+; 0x200 - Input checker command
 gSaveData           equ 0x0054d350
 gInputManager       equ 0x0054eed0
-
-.org cmd_1f_offset
-    .dw input_command
-
-.org jt_end
 
 ; r2 - special arg / arg0
 ; r3 - cmd args
