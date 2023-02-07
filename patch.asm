@@ -314,7 +314,7 @@ in_newcode:
 in_getinput:
     ldr r0, =gInputManager
     ldr r0, [r0]
-    cmp r2, #1
+    cmp r2, #0
     bhi in_touch
 
     ; 0x1F<0>: check for button input at specified bit
