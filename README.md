@@ -3,4 +3,4 @@ A game and file-system redirection patch for Rhythm Heaven Megamix (US version) 
 
 ## Credits
 - Original patches by Neobeo
-- Gate game prologue jingle patch by patataofcourse.
+- Gate game prologue jingle patch + custom input detection patch by patataofcourse
