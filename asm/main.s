@@ -3,6 +3,9 @@
 .arm.little
 .open "original.bin", "code.bin", 0x100000
 
+MAJOR_VERSION   equ 1
+MINOR_VERSION   equ 3
+
 ; custom commands
 .include "asm/custom_cmds.s"
 

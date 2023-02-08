@@ -3,7 +3,7 @@
 common_cmd_default  equ 0x0025c3c0
 common_cmd_return   equ 0x002613cc
 
-cmd_amount equ 1
+cmd_amount equ 2
 
 .org common_cmd_default
     b jt_switchcase
@@ -19,15 +19,29 @@ jt_switchcase:
     b common_cmd_return
 jt_table:
     .word input_command
+    .word version_command
 jt_end:
+
+; Registers' values
+
+; r2 - special arg / arg0
+; r3 / r5 - cmd args
+; r6 - game state
+
+; 0x201 - Quick version check
+version_command:
+    cmp r2, #0
+    strne r0, [r6, #0x20]
+    bne common_cmd_return
+
+    mov r0, MAJOR_VERSION * 0x100
+    add r0, r0, MINOR_VERSION
+    str r0, [r6, #0x20]
+    b common_cmd_return
 
 ; 0x200 - Input checker command
 gSaveData           equ 0x0054d350
 gInputManager       equ 0x0054eed0
-
-; r2 - special arg / arg0
-; r3 - cmd args
-; r6 - game state
 
 input_command:
     cmp r2, #2
