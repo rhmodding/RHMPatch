@@ -231,7 +231,7 @@ sdPath: .asciiz "_:/rhmm"
 ; Prologue jingle patch
 
 gateJingleFunc  equ 0x32D678
-newCode         equ 0x399F00
+newCode         equ 0x399ADC
 prologueJingles equ 0x52C9B8
 
 .org gateJingleFunc
