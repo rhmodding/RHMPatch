@@ -6,8 +6,16 @@
 MAJOR_VERSION   equ 1
 MINOR_VERSION   equ 3
 
+; prologue + custom command code start
+; putting it before apparently garbles the code and turns it to `b 0` fsr
+newCode         equ 0x399C00
+
 ; custom commands
 .include "asm/custom_cmds.s"
+
+.if . > 0x39A000
+.error "Custom command code too big"
+.endif
 
 openFile            equ 0x279E60 ; svc 0x32 (0x08030204)
 getSize             equ 0x2BC628 ; svc 0x32 (0x08040000)
@@ -231,7 +239,6 @@ sdPath: .asciiz "_:/rhmm"
 ; Prologue jingle patch
 
 gateJingleFunc  equ 0x32D678
-newCode         equ 0x399ADC
 prologueJingles equ 0x52C9B8
 
 .org gateJingleFunc
