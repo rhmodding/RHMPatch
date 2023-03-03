@@ -3,7 +3,7 @@
 common_cmd_default  equ 0x0025c3c0
 common_cmd_return   equ 0x002613cc
 
-cmd_amount equ 2
+cmd_amount equ 3
 
 .org common_cmd_default
     b jt_switchcase
@@ -20,6 +20,7 @@ jt_switchcase:
 jt_table:
     .word input_command
     .word version_command
+    .word language_command
 jt_end:
 
 ; Registers' values
@@ -31,7 +32,6 @@ jt_end:
 ; 0x201 - Quick version check
 version_command:
     cmp r2, #0
-    strne r0, [r6, #0x20]
     bne common_cmd_return
 
     mov r0, MAJOR_VERSION * 0x100
@@ -49,7 +49,7 @@ input_command:
     bcc in_getinput
     
     ; 0x200<2>: get simple tap vs buttons mode
-    push {r0, r1, r3}
+    push {r3}
 
     ; loads from save
     ldr r0, =gSaveData
@@ -76,7 +76,7 @@ input_command:
     add r2, r2, r1
     ldrb r2, [r0, r2]
 
-    pop {r0, r1, r3}
+    pop {r3}
 in_getinput:
     ldr r0, =gInputManager
     ldr r0, [r0]
@@ -108,6 +108,34 @@ in_null:
     ; set condvar to 0
     mov r0, #0
     str r0, [r6, #0x20]
+    b common_cmd_return
+
+.pool
+
+; 0x202 - Language command
+
+language_command:
+    cmp r2, #0
+    bne common_cmd_return
+
+    ldr r3, [r3]
+    cmp r3, #2
+    bcs common_cmd_return
+
+    ; gSaveData->unk9
+    ldr r0, =gSaveData
+    ldr r0, [r0]
+    ldr r1, [r0, #9]
+
+    ; gSaveData->currentFile
+    mov r3, #0x75
+    lsl r3, r3, #8
+    add r3, #0x60
+    ldr r2, [r0, r3]
+
+    lsr r1, r1, r2
+    and r1, r1, #1
+    str r1, [r6, #0x20]
     b common_cmd_return
 
 .pool
