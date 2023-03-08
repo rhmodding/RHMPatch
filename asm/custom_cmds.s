@@ -118,6 +118,9 @@ language_command:
     cmp r2, #0
     bne common_cmd_return
 
+    ldr r0, =gSaveData
+    ldr r0, [r0]
+
     ; 0x2d03 (gSaveData->fileData + fileData.isJapanese)
     mov r1, #0x2d
     lsl r1, r1, #8
