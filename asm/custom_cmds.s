@@ -118,24 +118,27 @@ language_command:
     cmp r2, #0
     bne common_cmd_return
 
-    ldr r3, [r3]
-    cmp r3, #2
-    bcs common_cmd_return
+    ; 0x2d03 (gSaveData->fileData + fileData.isJapanese)
+    mov r1, #0x2d
+    lsl r1, r1, #8
+    add r1, r1, #3
 
-    ; gSaveData->unk9
-    ldr r0, =gSaveData
-    ldr r0, [r0]
-    ldr r1, [r0, #9]
-
-    ; gSaveData->currentFile
+    ; 0x1648 (sizeof(individual save))
+    mov r2, #0x59
+    lsl r2, r2, #6
+    add r2, r2, #8
+    
+    ; 0x7560 (gSaveData->currentFile)
     mov r3, #0x75
     lsl r3, r3, #8
     add r3, #0x60
-    ldr r2, [r0, r3]
 
-    lsr r1, r1, r2
-    and r1, r1, #1
-    str r1, [r6, #0x20]
+    ; final offset: gSaveData->fileData[gSaveData->currentFile].isJapanese
+    ldr r3, [r0, r3]
+    mul r2, r2, r3
+    add r2, r2, r1
+    ldrb r2, [r0, r2]
+    str r2, [r6, #0x20]
     b common_cmd_return
 
 .pool
