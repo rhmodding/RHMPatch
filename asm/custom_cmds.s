@@ -141,6 +141,7 @@ language_command:
     mul r2, r2, r3
     add r2, r2, r1
     ldrb r2, [r0, r2]
+    eor r2, r2, #1
     str r2, [r6, #0x20]
     b common_cmd_return
 
