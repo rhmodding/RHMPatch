@@ -7,12 +7,13 @@ MAJOR_VERSION   equ 1
 MINOR_VERSION   equ 3
 
 ; prologue + custom command code start
-; putting it before apparently garbles the code and turns it to `b 0` fsr
+; putting it before apparently garbles the code and turns it to `b 0`
 newCode         equ 0x399C00
 
 ; custom commands
 .include "asm/custom_cmds.s"
 
+; we can open up some space for custom code in 0028c05c - 0028c098
 .if . > 0x39A000
 .error "Custom command code too big"
 .endif
@@ -23,8 +24,7 @@ readFile            equ 0x2BC544 ; svc 0x32 (0x080200C2)
 closeFile           equ 0x2BC59C ; svc 0x32 (0x08080000)
 svcControlMemory    equ 0x27F6CC ; svc 1
 
-; cfguHandleOffset = 0x54DCB4
-; cfgGetRegion = 0x1238C0
+cfgGetRegion        equ 0x1238C0
 
 userFsTryOpen       equ 0x2859B4
 mountSD             equ 0x2BC660
@@ -37,6 +37,12 @@ mountHook           equ 0x28B41C
     mov r0, 1
     bx lr
 
+; set region and language for asset loading to US-EN
+.org 0x100e10
+    mov r0, 1
+.org 0x100e1c
+    mov r0, 1
+
 .org 0x100000 ; hook from the start!
     bl allocateMemory_payload
 
@@ -46,7 +52,7 @@ mountHook           equ 0x28B41C
 .org userFsTryOpen
     b userFsTryOpen_payload
 
-.org 0x1238C0 ; where cfgGetRegion originally was
+.org cfgGetRegion
 allocateMemory_payload:
     ; here we allocate something of a suitable length
     push r0-r2, lr
@@ -246,8 +252,7 @@ prologueJingles equ 0x52C9B8
     b newCode
 
 .org newCode
-    adr r1, pr_pj
-    ldr r1, [r1]
+    ldr r1, [pr_pj]
     mov r0, #0
     b pr_label1
 pr_pj: .dw prologueJingles
