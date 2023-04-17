@@ -6,4 +6,4 @@ Install armips, place an unmodified code.bin as "original.bin", then run `armips
 
 ## Credits
 - Original patches by Neobeo
-- Gate game prologue jingle patch + custom input detection patch by patataofcourse
+- RHMPatch v1.3 onwards by patataofcourse
