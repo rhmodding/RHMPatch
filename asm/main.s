@@ -4,7 +4,7 @@
 .open "original.bin", "code.bin", 0x100000
 
 MAJOR_VERSION   equ 1
-MINOR_VERSION   equ 3
+MINOR_VERSION   equ 4
 
 ; prologue + custom command code start
 ; putting it before apparently garbles the code and turns it to `b 0`
