@@ -146,4 +146,3 @@ language_command:
     b common_cmd_return
 
 .pool
-getSpecialVer equ 0x257a78
