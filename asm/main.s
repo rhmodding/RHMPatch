@@ -272,30 +272,4 @@ pr_label3:
 pr_nf: .asciiz "NotFoundAac"
 pr_end:
 
-; Fan Club jumpclap patch
-; Conditional to 0x2B setup being 0xF
-
-getSpecialVer equ 0x00257a78
-
-FanClub__doClap equ 0x003453f8
-FanClub__noClap equ 0x0034540c
-
-.org 0x003453e4
-    b FanClub__clapPatch
-
-FanClub__clapPatch:
-    mov r0, #0x15
-    bl getSpecialVer
-    cmp r0, #0xf
-    ldrne r0, [r4, #0x80]
-    ldrne r1, [r0, #0xa4]
-    ldrbne r1, [r1, #0x30]
-    cmpne r1, #0
-    beq FanClub__doClap
-    bne FanClub__noClap
-
-.if . > 0x0020ade8
-.error "extra custom code too big"
-.endif
-
 .close
