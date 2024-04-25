@@ -13,6 +13,8 @@ newCode         equ 0x399C00
 ; custom commands
 .include "asm/custom_cmds.s"
 
+moreNewCode     equ .
+
 ; we can open up some space for custom code in 0028c05c - 0028c098
 .if . > 0x39A000
 .error "Custom command code too big"
@@ -271,5 +273,38 @@ pr_label3:
     bx lr
 pr_nf: .asciiz "NotFoundAac"
 pr_end:
+
+
+; Fan Club patch - I don't remember what any of this did
+; why is this patch always active????
+.org 0x003453f4
+    b 0x0034540c
+
+; why are these never called???''
+
+.org moreNewCode
+FanClub_idr:
+    push {r0, lr}
+    mov r0, #0x15
+    bl getSpecialVer
+    cmp r0, #0xf
+    pop {r0, lr}
+    moveq r1, #1
+    movne r1, #0
+    bx lr
+
+FanClub_idr2:
+    push {r0, lr}
+    mov r0, #0x15
+    bl getSpecialVer
+    cmp r0, #0xf
+    pop {r0, lr}
+    moveq r1, #7
+    movne r1, #6
+    bx lr
+
+.if . > 0x39A000
+.error "Fan Club code too big"
+.endif
 
 .close
