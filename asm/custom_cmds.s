@@ -3,7 +3,10 @@
 common_cmd_default  equ 0x0025c3c0
 common_cmd_return   equ 0x002613cc
 
-cmd_amount equ 3
+; Supported commands: 0x200, 0x201, 0x202, 0x204
+; Saltwater-only commands: 0x203
+
+cmd_amount equ 5
 
 .org common_cmd_default
     b jt_switchcase
@@ -21,6 +24,8 @@ jt_table:
     .word input_command
     .word version_command
     .word language_command
+    .word common_cmd_return
+    .word endless_command
 jt_end:
 
 ; Registers' values
@@ -143,6 +148,63 @@ language_command:
     ldrb r2, [r0, r2]
     eor r2, r2, #1
     str r2, [r6, #0x20]
+    b common_cmd_return
+
+.pool
+
+; 0x204 - EndlessPatch replacement
+D_0054ef10      equ 0x0054ef10 ; no clue what this is
+gSaveManager    equ 0x0054ef28
+
+isGateGameValid equ 0x00255550
+getGateScore    equ 0x00261a6c
+setGateScore    equ 0x002366c0
+saveGame        equ 0x0028bf14 
+
+endless_command:
+    cmp r2, #0
+    bne common_cmd_return
+
+    ldr r5, =gSaveData
+    ldr r5, [r5]
+
+    ; get current slot
+    ldr r0, =D_0054ef10
+    ldr r0, [r0]
+    ldrb r4, [r0, 0x4c] ; current gate slot - not updated if this is a non-gate game
+
+    ; must only be run on an endless game, not a gate game
+    mov r1, 0b11
+    and r1, r4, r1
+    cmp r1, #3
+    bne common_cmd_return
+    
+    ; gate game has to be valid
+    mov r0, r4
+    bl isGateGameValid
+
+    ; get saved score
+    mov r0, r5
+    mov r1, r4
+    mvn r2, #0      ; r2 = -1
+    bl getGateScore
+
+    ; if the saved score is bigger or equal to the current score, don't save
+    ldr r2, [r6, #0x20]
+    cmp r0, r2
+    bge common_cmd_return
+
+    ; save condvar to score
+    mov r0, r5
+    mov r1, r4
+    mvn r3, #0      ; r3 = -1
+    bl setGateScore
+
+    ; save the game
+    ldr r0, =gSaveManager
+    ldr r0, [r0]
+    bl saveGame
+
     b common_cmd_return
 
 .pool
