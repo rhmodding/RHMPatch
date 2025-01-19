@@ -3,31 +3,35 @@
 
 FanClub_branch      equ 0x003453f4
 FanClub_success     equ 0x0034540c
-FanClub_isJumping   equ 0x003454fc
+FanClub_fail        equ 0x003453f8
 
 getSpecialVer       equ 0x00257a78
 
 @moreNewCode:
 
-; Fan Club patch - I don't remember what any of this did
-; why is this patch always active????
+; Fan Club patch
+; Hoping This Works TM
+
+; instead of branching to the clap function if not jumping, add an extra check
 .org FanClub_branch
-    beq FanClub_success
-    ;b FanClub_check
+    b FanClub_check
 
 .org @moreNewCode
 
 FanClub_check:
-    push {lr}
+    ; original instruction
+    beq FanClub_success
+    push {r0, r1, r2, r3, r12, lr}
 
     ; check 0x2B mode for Fan Club (0x15)
     mov r0, #0x15
     bl getSpecialVer
     cmp r0, #0xf
 
-    pop {lr}
+    pop {r0, r1, r2, r3, r12, lr}
 
+    ; if mode is appropiate, do clap input anyway
     beq FanClub_success
 
-    ldr r0, [r6]  ; first instruction from the original check
-    b FanClub_isJumping
+    ; otherwise, work as intended
+    b FanClub_fail
