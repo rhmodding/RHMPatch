@@ -3,10 +3,10 @@
 common_cmd_default  equ 0x0025c3c0
 common_cmd_return   equ 0x002613cc
 
-; Supported commands: 0x200, 0x201, 0x202, 0x204
-; Saltwater-only commands: 0x203
+; Supported commands: 0x200, 0x201, 0x202, 0x205
+; Saltwater-only commands: 0x203, 0x204
 
-cmd_amount equ 5
+cmd_amount equ 6
 
 .org common_cmd_default
     b jt_switchcase
@@ -152,7 +152,7 @@ language_command:
 
 .pool
 
-; 0x204 - EndlessPatch replacement
+; 0x205 - EndlessPatch replacement
 D_0054ef10      equ 0x0054ef10 ; no clue what this is
 gSaveManager    equ 0x0054ef28
 
