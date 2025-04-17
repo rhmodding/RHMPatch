@@ -182,6 +182,8 @@ endless_command:
     ; gate game has to be valid
     mov r0, r4
     bl isGateGameValid
+    cmp r0, #0
+    beq common_cmd_return
 
     ; get saved score
     mov r0, r5
@@ -201,8 +203,8 @@ endless_command:
     bl setGateScore
 
     ; save the game
-    ldr r0, =gSaveManager
-    ldr r0, [r0]
+    ldr r5, =gSaveManager
+    ldr r5, [r5]
     bl saveGame
 
     b common_cmd_return
