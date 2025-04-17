@@ -12,6 +12,9 @@ newCode         equ 0x399C00
 
 ; custom commands
 .include "asm/custom_cmds.s"
+.include "asm/cond_patches.s"
+
+moreNewCode     equ .
 
 ; we can open up some space for custom code in 0028c05c - 0028c098
 .if . > 0x39A000
