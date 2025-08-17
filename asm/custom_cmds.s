@@ -25,6 +25,7 @@ jt_table:
     .word version_command
     .word language_command
     .word common_cmd_return
+    .word common_cmd_return
     .word endless_command
 jt_end:
 
