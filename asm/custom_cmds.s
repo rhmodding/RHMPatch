@@ -4,9 +4,9 @@ common_cmd_default  equ 0x0025c3c0
 common_cmd_return   equ 0x002613cc
 
 ; Supported commands: 0x200, 0x201, 0x202, 0x205
-; Saltwater-only commands: 0x203, 0x204
+; Saltwater-only commands: 0x203, 0x204, 0x206
 
-cmd_amount equ 6
+cmd_amount equ 7
 
 .org common_cmd_default
     b jt_switchcase
@@ -24,9 +24,10 @@ jt_table:
     .word input_command
     .word version_command
     .word language_command
-    .word common_cmd_return
-    .word common_cmd_return
+    .word common_cmd_return ; persistent A
+    .word common_cmd_return ; persistent B
     .word endless_command
+    .word common_cmd_return ; msbt printf
 jt_end:
 
 ; Registers' values
